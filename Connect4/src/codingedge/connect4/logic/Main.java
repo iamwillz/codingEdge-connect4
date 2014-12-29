@@ -97,6 +97,8 @@ public class Main {
 			System.out.println("PLAYER TWO WINS");
 			break;
 		}
+		
+		reader.close();
 	}
 
 }

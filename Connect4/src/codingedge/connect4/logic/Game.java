@@ -51,10 +51,11 @@ public class Game {
 	public void makeMove(int col, int player) throws InvalidMoveException, GameNotActiveException, NotValidPlayerException, InvalidColumnException {
 		if (currentState == State.GAME_ACTIVE) { 
 			if (player == 1 || player == -1) {
-				if (!board.addToColumn(col, player)) { 
+				int row = board.addToColumn(col, player);
+				if (row < 0) { 
 					throw new InvalidMoveException("The move is invalid, the column is full");					
 				} else {
-					updateGameStateFromColumn(col);
+					updateGameStateFromPosition(col, row);
 				}
 			} else {
 				throw new NotValidPlayerException("Please use a valid int for player (1 or -1)");		
@@ -70,7 +71,7 @@ public class Game {
 	
 	public boolean checkIsGameOver() {
 		// Only check for winner if the game is active
-		updateGameState();
+		//updateGameState();
 		
 		return (currentState == State.GAME_OVER_DRAW || 
 				currentState == State.GAME_OVER_ONE  || 
@@ -89,6 +90,7 @@ public class Game {
 		return board.getBoardArray();
 	}
 	
+	// TODO:remove method
 	private void updateGameState() { 
 		if (currentState == State.GAME_ACTIVE) {
 			int winner = board.isGameWon();
@@ -102,9 +104,9 @@ public class Game {
 		}
 	}
 	
-	private void updateGameStateFromColumn(int col) { 
+	private void updateGameStateFromPosition(int col, int row) { 
 		if (currentState == State.GAME_ACTIVE) {
-			int winner = board.isGameWonFromColumn(col);
+			int winner = board.isGameWonFromPosition(col, row);
 			if (winner == 1) {
 				currentState = State.GAME_OVER_ONE;
 			} else if (winner == -1) {

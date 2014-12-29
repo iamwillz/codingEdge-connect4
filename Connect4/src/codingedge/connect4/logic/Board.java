@@ -35,9 +35,9 @@ public class Board {
 		board = new int[this.width][this.height];
 	}
 
-	// 
-	// Returns false if the column is full, else true
-	public boolean addToColumn(int column, int player) throws InvalidColumnException, NotValidPlayerException {
+	// Returns the row in which it was placed in
+	// Else -1, if the column is full
+	public int addToColumn(int column, int player) throws InvalidColumnException, NotValidPlayerException {
 		if (column < 0 || column >= width) {
 			throw new InvalidColumnException("Column number " + column + " was invalid");
 		} else if (player != -1 && player != 1) { 
@@ -46,11 +46,11 @@ public class Board {
 			for (int h = 0; h < this.height; h++) {
 				if (board[column][h] == 0) {
 					board[column][h] = player;
-					return true;
+					return h;
 				}
 			}
 		}
-		return false;
+		return -1;
 	}
 
 	// TODO: Do I want this as an enum? Maybe a game state, enum?
@@ -79,17 +79,6 @@ public class Board {
 		return 0;
 	}
 
-	public int isGameWonFromColumn(int col) { 
-		for (int y = this.height - 1; y >= 0; y--) {
-			if (board[col][y] == 0){
-				continue;
-			} else {
-				return isGameWonFromPosition(col, y);
-			}
-		}
-		return 0;
-	}
-
 	public int isGameWonFromPosition(int x, int y) { 
 		if (checkForSolutionFromPosition(x, y, board[x][y])) { 
 			return board[x][y];
@@ -112,6 +101,45 @@ public class Board {
 
 	// Return true if there is a set of 4 consecutive pieces from the same player at board[x][y]
 	private boolean checkForSolutionFromPosition(int x, int y, int player) { 
+		String s = "";
+		for (int col = 0; col < this.width; col++){
+			s = s.concat(Integer.toString(board[col][y]));
+		}
+		if (checkForSolutionFromString(s, player)) {
+			return true;
+		}
+
+		s = "";
+		for (int row = 0 ; row < this.height; row++){
+			s = s.concat(Integer.toString(board[x][row]));
+		}
+		if (checkForSolutionFromString(s, player)) {
+			return true;
+		}
+		s = Integer.toString(board[x][y]);
+		for (int row = y + 1, col = x + 1; row < this.height && col < this.width; row++, col++){
+			s = s.concat(Integer.toString(board[col][row]));
+		}
+
+		for (int row = y - 1, col = x - 1; row >= 0 && col >= 0; row--, col--){
+			s = Integer.toString(board[col][row]).concat(s);
+		}
+		if (checkForSolutionFromString(s, player)) {
+			return true;
+		}
+		
+		s = Integer.toString(board[x][y]);
+		for (int row = y - 1, col = x + 1; row >= 0 && col < this.width; row--, col++){
+			s = s.concat(Integer.toString(board[col][row]));
+		}
+
+		for (int row = y + 1, col = x - 1; row < this.height && col >= 0; row++, col--){
+			s = s.concat(Integer.toString(board[col][row]));
+		}
+		if (checkForSolutionFromString(s, player)) {
+			return true;
+		}
+		/**
 		for (int dx = -1; dx <= 1; dx++) {
 			for (int dy = -1; dy <= 1; dy++) {
 				if (dx != 0 || dy != 0) {
@@ -120,44 +148,19 @@ public class Board {
 					}
 				}
 			}
-		}
+		} **/
 		
+		return false;		
+	}
+	
+	private boolean checkForSolutionFromString(String s, int player){
+		String winner = new String(new char[4]).replace("\0", Integer.toString(player));
+		if (s.contains(winner)) {
+			return true;
+		}
 		return false;
-		
-		/**
-		if (checkForSolutionInDirection(x, y, 0, 1, player, 4)) {			// Check above
-			return true; 
-		} else if (checkForSolutionInDirection(x, y, 0, -1, player, 4)) {	// Check below
-			return true;
-		} else if (checkForSolutionInDirection(x, y, -1, 0, player, 4)) {	// Check left
-			return true;
-		} else if (checkForSolutionInDirection(x, y, -1, 0, player, 4)) {	// Check right
-			return true;
-		} else if (checkForSolutionInDirection(x, y, 1, 1, player, 4)) {	// Check top right
-			return true;
-		} else if (checkForSolutionInDirection(x, y, -1, 1, player, 4)) {	// Check top left
-			return true;
-		} else if (checkForSolutionInDirection(x, y, 1, -1, player, 4)) {	// Check bottom right
-			return true;
-		} else if (checkForSolutionInDirection(x, y, -1, -1, player, 4)) {	// Check bottom left
-			return true;
-		} else {
-			return false;
-		}
-		**/
-		
 	}
-
-	public boolean isBoardFull() {
-		for (int i = 0; i < this.width; i++) {
-			for (int h = this.height; h > 0; h--) {
-				if (board[i][h - 1] == 0) { 
-					return false;
-				}
-			}	
-		}
-		return true;
-	}
+/**
 	// Recursive function that checks the board at that width, and height
 	// Returns true if there are consecutive 'remaining' number of pieces
 	// that are dx/dy away (ie dx = 1, dy = -1 means bottom right)
@@ -173,7 +176,17 @@ public class Board {
 		}
 		return false;
 	}
-
+**/
+	public boolean isBoardFull() {
+		for (int i = 0; i < this.width; i++) {
+			for (int h = this.height; h > 0; h--) {
+				if (board[i][h - 1] == 0) { 
+					return false;
+				}
+			}	
+		}
+		return true;
+	}
 
 	private boolean isColumnFull(int col) {
 		for (int h = this.height; h > 0; h--) {
