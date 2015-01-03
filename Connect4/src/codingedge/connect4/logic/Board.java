@@ -5,8 +5,9 @@ public class Board {
 	private static int DEFAULT_BOARD_WIDTH = 7;
 
 	private static int DEFAULT_BOARD_HEIGHT = 6;
-
+	
 	private int width, height;
+	
 	// Board of ints representing the state of the board
 	// 0 signifies no piece is in that cell
 	// 1 signifies player one has a piece in that cell
@@ -26,7 +27,6 @@ public class Board {
 	public Board(int width, int height) {
 		this.width = width;
 		this.height = height;
-
 		board = new int[this.width][this.height];
 	}
 
@@ -35,13 +35,19 @@ public class Board {
 		board = new int[this.width][this.height];
 	}
 
+	public int playerOneMove(int column){
+		return 0;
+	}
+	
+	public int playerTwoMove(int column){
+		return 0;
+	}
+	
 	// Returns the row in which it was placed in
 	// Else -1, if the column is full
-	public int addToColumn(int column, int player) throws InvalidColumnException, NotValidPlayerException {
+	public int addToColumn(int column, int player) throws InvalidColumnException {
 		if (column < 0 || column >= width) {
 			throw new InvalidColumnException("Column number " + column + " was invalid");
-		} else if (player != -1 && player != 1) { 
-			throw new NotValidPlayerException("Please use a valid int for player (1 or -1)");	
 		} else if (!isColumnFull(column)) {
 			for (int h = 0; h < this.height; h++) {
 				if (board[column][h] == 0) {
@@ -65,8 +71,8 @@ public class Board {
 	// Scans the board from bottom left to top right
 	// Looks for a possible 'winning' pattern
 	// Returns 0 if the board is still playable
-	// Return 1 if player one won
-	// Return -1 if player two won
+	// Return PLAYER_ONE if player one won
+	// Return PLAYER_TWO if player two won
 	public int isGameWon() {
 		for (int x = 0; x < this.width; x++) {
 			for (int y = 0; y < this.height; y++) {
@@ -160,23 +166,7 @@ public class Board {
 		}
 		return false;
 	}
-/**
-	// Recursive function that checks the board at that width, and height
-	// Returns true if there are consecutive 'remaining' number of pieces
-	// that are dx/dy away (ie dx = 1, dy = -1 means bottom right)
-	// When remaining == 0, return true
-	// player is either -1 or 1.. should have some enum for less confusion
-	private boolean checkForSolutionInDirection(int x, int y, int dx, int dy, int player, int remaining) {
-		if (remaining == 0) {
-			return true;
-		} else if (x >= 0 && x < this.width && y >=0 && y < this.height) {
-			if (board[x][y] == player) {
-				return checkForSolutionInDirection(x + dx, y + dy, dx, dy, player, remaining - 1);
-			}
-		}
-		return false;
-	}
-**/
+
 	public boolean isBoardFull() {
 		for (int i = 0; i < this.width; i++) {
 			for (int h = this.height; h > 0; h--) {
@@ -195,6 +185,36 @@ public class Board {
 			}
 		}
 		return true;
+	}
+	public void drawBoard(int playerOne, int playerTwo) {
+		int[][] boardArr = this.getBoardArray();
+
+		drawIntBoard(boardArr, this.getWidth(), this.getHeight(), playerOne, playerTwo);
+	}
+
+	private void drawIntBoard(int[][] boardArr, int width, int height, int playerOne, int playerTwo) {
+		String header = "";
+		for (int x = 0; x < width; x++) {
+			header = header.concat("  " + x + "  ");
+		}
+		System.out.println(header);
+		for (int y = height - 1; y >= 0; y--) {
+			String output = "";
+			for (int x = 0; x < width; x++) {
+				output = output.concat("| ");
+				int boardValue = boardArr[x][y];
+				if (boardValue == playerOne){
+					output = output.concat("o");
+				} else if (boardValue == playerTwo){
+					output = output.concat("x");
+				} else{
+					output = output.concat(" ");
+				}
+				output = output.concat(" |");
+			}
+
+			System.out.println(output);
+		}
 	}
 
 }
