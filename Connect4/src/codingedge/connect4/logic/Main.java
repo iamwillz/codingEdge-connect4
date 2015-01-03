@@ -3,44 +3,6 @@ package codingedge.connect4.logic;
 import java.util.Scanner;
 
 public class Main {
-
-	public static void drawBoard(Board board) {
-		String output = "";
-
-		int[][] boardArr = board.getBoardArray();
-
-		drawIntBoard(boardArr, board.getWidth(), board.getHeight());
-	}
-
-	public static void drawIntBoard(int[][] boardArr, int width, int height) {
-		String header = "";
-		for (int x = 0; x < width; x++) {
-			header = header.concat("  " + x + "  ");
-		}
-		System.out.println(header);
-		for (int y = height - 1; y >= 0; y--) {
-			String output = "";
-			for (int x = 0; x < width; x++) {
-				output = output.concat("| ");
-				switch (boardArr[x][y]) {
-				case 0:
-				default:
-					output = output.concat(" ");
-					break;
-				case 1:
-					output = output.concat("o");
-					break;
-				case -1:
-					output = output.concat("x");
-					break;
-				}
-				output = output.concat(" |");
-			}
-
-			System.out.println(output);
-		}
-	}
-
 	/**
 	 * @param args
 	 */
@@ -53,7 +15,8 @@ public class Main {
 		Scanner reader = new Scanner(System.in);
 
 		boolean playerOne = true;
-
+		System.out.println("\n\n\n\n\n\n\n\n\n\n");
+		game.drawBoard();
 		while (!game.checkIsGameOver()) {
 			String playerStr = playerOne ? "one" : "two";
 			System.out.println("Player " + playerStr
@@ -63,12 +26,16 @@ public class Main {
 			if (reader.hasNextInt()) {
 				playerMove = reader.nextInt();
 				try {
-					game.makeMove(playerMove, playerOne ? 1 : -1);
+					if (playerOne) {
+						game.makePlayerOneMove(playerMove);
+					} else {
+						game.makePlayerTwoMove(playerMove);
+					}
 					playerOne = !playerOne;
 
 					// System.out.println(test.length);
 					System.out.println("\n\n\n\n\n\n\n\n\n\n");
-					drawBoard(game.getBoard());
+					game.drawBoard();
 				} catch (InvalidMoveException e) {
 					System.out.println(e.getMessage());
 				} catch (GameNotActiveException e) {

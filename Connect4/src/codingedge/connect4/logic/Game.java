@@ -1,15 +1,18 @@
 package codingedge.connect4.logic;
 
 public class Game {
-	private String playerOne, playerTwo;	
 	
-	private Board board;
+	public String playerOne, playerTwo;	
 	
 	public enum State {
 		GAME_OVER_DRAW, GAME_OVER_ONE, GAME_OVER_TWO, GAME_ACTIVE, GAME_INACTIVE
 	}
 	
 	public State currentState;
+	
+	private Board board;
+
+	private static int PLAYER_ONE_INT = 1, PLAYER_TWO_INT = 2;
 	
 	public Game() {
 		this.playerOne = "Player One";
@@ -48,9 +51,17 @@ public class Game {
 		currentState = State.GAME_ACTIVE;
 	}
 
-	public void makeMove(int col, int player) throws InvalidMoveException, GameNotActiveException, NotValidPlayerException, InvalidColumnException {
+	public void makePlayerOneMove(int col)  throws InvalidMoveException, GameNotActiveException, NotValidPlayerException, InvalidColumnException {
+		makeMove(col, PLAYER_ONE_INT);
+	}
+	
+	public void makePlayerTwoMove(int col)  throws InvalidMoveException, GameNotActiveException, NotValidPlayerException, InvalidColumnException {
+		makeMove(col, PLAYER_TWO_INT);
+	}
+	
+	private void makeMove(int col, int player) throws InvalidMoveException, GameNotActiveException, NotValidPlayerException, InvalidColumnException {
 		if (currentState == State.GAME_ACTIVE) { 
-			if (player == 1 || player == -1) {
+			if (player == PLAYER_ONE_INT || player == PLAYER_TWO_INT) {
 				int row = board.addToColumn(col, player);
 				if (row < 0) { 
 					throw new InvalidMoveException("The move is invalid, the column is full");					
@@ -58,7 +69,7 @@ public class Game {
 					updateGameStateFromPosition(col, row);
 				}
 			} else {
-				throw new NotValidPlayerException("Please use a valid int for player (1 or -1)");		
+				throw new NotValidPlayerException("Please use a valid int for player (" + PLAYER_ONE_INT + " or " + PLAYER_TWO_INT + ")");		
 			}
 		} else { 
 			throw new GameNotActiveException("Game has not started yet, please start the game.");
@@ -90,26 +101,16 @@ public class Game {
 		return board.getBoardArray();
 	}
 	
-	// TODO:remove method
-	private void updateGameState() { 
-		if (currentState == State.GAME_ACTIVE) {
-			int winner = board.isGameWon();
-			if (winner == 1) {
-				currentState = State.GAME_OVER_ONE;
-			} else if (winner == -1) {
-				currentState = State.GAME_OVER_TWO;
-			} else if (board.isBoardFull()) {
-				currentState = State.GAME_OVER_DRAW;
-			}
-		}
+	public void drawBoard(){ 
+		board.drawBoard(PLAYER_ONE_INT, PLAYER_TWO_INT);
 	}
 	
 	private void updateGameStateFromPosition(int col, int row) { 
 		if (currentState == State.GAME_ACTIVE) {
 			int winner = board.isGameWonFromPosition(col, row);
-			if (winner == 1) {
+			if (winner == PLAYER_ONE_INT) {
 				currentState = State.GAME_OVER_ONE;
-			} else if (winner == -1) {
+			} else if (winner == PLAYER_TWO_INT) {
 				currentState = State.GAME_OVER_TWO;
 			} else if (board.isBoardFull()) {
 				currentState = State.GAME_OVER_DRAW;
