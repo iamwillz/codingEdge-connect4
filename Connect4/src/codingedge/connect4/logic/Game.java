@@ -10,14 +10,18 @@ public class Game {
 	
 	public State currentState;
 	
-	private Board board;
+	public static int PLAYER_ONE_INT = 1, PLAYER_TWO_INT = 2;
 
-	private static int PLAYER_ONE_INT = 1, PLAYER_TWO_INT = 2;
+	private Board board;
+	
+	private int currentPlayer;
+
 	
 	public Game() {
 		this.playerOne = "Player One";
 		this.playerTwo = "Player Two";
 		
+		currentPlayer = PLAYER_ONE_INT;
 		currentState = State.GAME_INACTIVE;
 		board = new Board();
 	}
@@ -26,6 +30,7 @@ public class Game {
 		this.playerOne = playerOne;
 		this.playerTwo = playerTwo;
 		
+		currentPlayer = PLAYER_ONE_INT;
 		currentState = State.GAME_INACTIVE;
 		board = new Board();
 	}
@@ -34,6 +39,7 @@ public class Game {
 		this.playerOne = "Player One";
 		this.playerTwo = "Player Two";
 		
+		currentPlayer = PLAYER_ONE_INT;
 		currentState = State.GAME_INACTIVE;
 		board = new Board(width, height);	
 	}
@@ -42,6 +48,7 @@ public class Game {
 		this.playerOne = playerOne;
 		this.playerTwo = playerTwo;
 		
+		currentPlayer = PLAYER_ONE_INT;
 		currentState = State.GAME_INACTIVE;
 		board = new Board(width, height);	
 	}
@@ -49,6 +56,11 @@ public class Game {
 	public void startGame() {
 		board.clearBoard();
 		currentState = State.GAME_ACTIVE;
+	}
+	
+	public void makeNextMove(int col) throws InvalidMoveException, GameNotActiveException, NotValidPlayerException, InvalidColumnException {
+		makeMove(col, currentPlayer);
+		currentPlayer = currentPlayer == PLAYER_ONE_INT? PLAYER_TWO_INT : PLAYER_ONE_INT;
 	}
 
 	public void makePlayerOneMove(int col)  throws InvalidMoveException, GameNotActiveException, NotValidPlayerException, InvalidColumnException {
@@ -97,8 +109,20 @@ public class Game {
 		return board;
 	}
 	
+	public int getPlayerOneInt(){
+		return PLAYER_ONE_INT;
+	}
+	
+	public int getPlayerTwoInt(){
+		return PLAYER_TWO_INT;
+	}
+	
 	public int[][] getBoardArray() {
 		return board.getBoardArray();
+	}
+	
+	public int getCurrentPlayer(){
+		return currentPlayer;
 	}
 	
 	public void drawBoard(){ 

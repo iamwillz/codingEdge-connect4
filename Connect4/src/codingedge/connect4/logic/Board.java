@@ -35,13 +35,7 @@ public class Board {
 		board = new int[this.width][this.height];
 	}
 
-	public int playerOneMove(int column){
-		return 0;
-	}
-	
-	public int playerTwoMove(int column){
-		return 0;
-	}
+
 	
 	// Returns the row in which it was placed in
 	// Else -1, if the column is full
