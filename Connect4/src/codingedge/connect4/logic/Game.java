@@ -1,5 +1,7 @@
 package codingedge.connect4.logic;
 
+import java.util.Scanner;
+
 public class Game {
 	
 	public String playerOne, playerTwo;	
@@ -26,33 +28,6 @@ public class Game {
 		board = new Board();
 	}
 	
-	public Game(String playerOne, String playerTwo) {
-		this.playerOne = playerOne;
-		this.playerTwo = playerTwo;
-		
-		currentPlayer = PLAYER_ONE_INT;
-		currentState = State.GAME_INACTIVE;
-		board = new Board();
-	}
-	
-	public Game(int width, int height) { 
-		this.playerOne = "Player One";
-		this.playerTwo = "Player Two";
-		
-		currentPlayer = PLAYER_ONE_INT;
-		currentState = State.GAME_INACTIVE;
-		board = new Board(width, height);	
-	}
-	
-	public Game(int width, int height, String playerOne, String playerTwo) {
-		this.playerOne = playerOne;
-		this.playerTwo = playerTwo;
-		
-		currentPlayer = PLAYER_ONE_INT;
-		currentState = State.GAME_INACTIVE;
-		board = new Board(width, height);	
-	}
-	
 	public void startGame() {
 		board.clearBoard();
 		currentState = State.GAME_ACTIVE;
@@ -61,14 +36,6 @@ public class Game {
 	public void makeNextMove(int col) throws InvalidMoveException, GameNotActiveException, NotValidPlayerException, InvalidColumnException {
 		makeMove(col, currentPlayer);
 		currentPlayer = currentPlayer == PLAYER_ONE_INT? PLAYER_TWO_INT : PLAYER_ONE_INT;
-	}
-
-	public void makePlayerOneMove(int col)  throws InvalidMoveException, GameNotActiveException, NotValidPlayerException, InvalidColumnException {
-		makeMove(col, PLAYER_ONE_INT);
-	}
-	
-	public void makePlayerTwoMove(int col)  throws InvalidMoveException, GameNotActiveException, NotValidPlayerException, InvalidColumnException {
-		makeMove(col, PLAYER_TWO_INT);
 	}
 	
 	private void makeMove(int col, int player) throws InvalidMoveException, GameNotActiveException, NotValidPlayerException, InvalidColumnException {
@@ -141,4 +108,57 @@ public class Game {
 			}
 		}
 	}
+	
+	private void showGameOver() {
+		System.out.println("GAME OVER");
+		switch (currentState) {
+		default:
+		case GAME_OVER_DRAW:
+			System.out.println("DRAW");
+			break;
+		case GAME_OVER_ONE:
+			System.out.println("PLAYER ONE WINS");
+			break;
+		case GAME_OVER_TWO:
+			System.out.println("PLAYER TWO WINS");
+			break;
+		}
+	}
+	
+	public static void main(String[] args) {
+		Game game = new Game();
+		Scanner reader = new Scanner(System.in);
+
+		game.startGame();
+		game.drawBoard();
+		
+		while (!game.checkIsGameOver()) {
+			String playerStr = (game.currentPlayer == PLAYER_ONE_INT) ? game.playerOne : game.playerTwo;
+			System.out.println(playerStr + "'s turn to move. Enter a column number between 0 and 6");
+
+			int playerMove;
+			if (reader.hasNextInt()) {
+				playerMove = reader.nextInt();
+				try {
+					game.makeNextMove(playerMove);
+					game.drawBoard();
+				} catch (InvalidMoveException e) {
+					System.out.println(e.getMessage());
+				} catch (GameNotActiveException e) {
+					System.out.println(e.getMessage());
+				} catch (NotValidPlayerException e) {
+					System.out.println(e.getMessage());
+				} catch (InvalidColumnException e) {
+					System.out.println(e.getMessage());
+				}
+			} else {
+				System.out.println("Please enter a valid number");
+				reader.next();
+			}
+		}
+		
+		game.showGameOver();
+		reader.close();
+	}
+
 }

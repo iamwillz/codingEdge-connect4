@@ -28,7 +28,6 @@ public class ColumnButton extends JButton implements ActionListener {
 		this.addActionListener(new ActionListener() {
 	         public void actionPerformed(ActionEvent e) {
 	             try {
-	            	 System.out.println("actiionnwee\n");
 					game.makeNextMove(columnNumber);
 				} catch (InvalidMoveException | GameNotActiveException
 						| NotValidPlayerException | InvalidColumnException e1) {
@@ -44,7 +43,6 @@ public class ColumnButton extends JButton implements ActionListener {
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		System.out.println("actiionn\n");
 //		if (Integer.toString(columnNumber).equals(e.getActionCommand())) {
 //			try {
 //				game.makeNextMove(columnNumber);

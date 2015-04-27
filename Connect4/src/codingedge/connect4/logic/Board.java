@@ -180,6 +180,7 @@ public class Board {
 		}
 		return true;
 	}
+
 	public void drawBoard(int playerOne, int playerTwo) {
 		int[][] boardArr = this.getBoardArray();
 
@@ -187,6 +188,7 @@ public class Board {
 	}
 
 	private void drawIntBoard(int[][] boardArr, int width, int height, int playerOne, int playerTwo) {
+		System.out.println("\n\n\n\n\n\n\n\n\n\n");
 		String header = "";
 		for (int x = 0; x < width; x++) {
 			header = header.concat("  " + x + "  ");
