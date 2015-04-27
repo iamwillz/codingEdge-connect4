@@ -120,7 +120,7 @@ public class DrawGame extends JPanel {
 
 			}
 		}
-
+		dg.paint(dg.getGraphics());
 		System.out.println("GAME OVER");
 		switch (game.currentState) {
 		default:
