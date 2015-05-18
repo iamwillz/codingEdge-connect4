@@ -18,12 +18,26 @@ public class SwingGame extends Game {
 	JFrame frame;
 	BoardPanel boardPanel;
 	JLabel text;
+	JLabel messageText;
 	
 	public SwingGame() {
 		super();
 //		Board b = game.getBoard();
 		boardPanel = new BoardPanel(this);
 		initFrame();
+	}
+	
+	public void showTurnText(){
+		String playerStr = this.getCurrentPlayer() == Game.PLAYER_ONE_INT ? "one" : "two";	
+		text.setText("Player " + playerStr + "'s turn to move. ");
+	}
+	
+	public void showMessage(String s){
+		messageText.setText(s);
+	}
+	
+	public void clearMessage(){
+		messageText.setText("");
 	}
 	
 	private void initFrame(){
@@ -37,10 +51,14 @@ public class SwingGame extends Game {
 		c.gridwidth = 8;
 		frame.add(text,c);
 		
+		messageText = new JLabel("Click on a number below to start player one's turn");
+		c.gridy = 1;
+		frame.add(messageText, c);
+		
 		c.ipadx = 400;
 		c.ipady = 330;
-		c.gridx = 0;
-		c.gridy = 1;
+		c.gridx = 1;
+		c.gridy = 2;
 		frame.add(boardPanel, c);
 
 		frame.setSize(450, 500);
@@ -51,12 +69,10 @@ public class SwingGame extends Game {
 			final int colNum = i;
 			GridBagConstraints d = new GridBagConstraints();
 			d.fill = GridBagConstraints.CENTER;
-			d.gridx = i;
-			d.gridy = 2;
+			d.gridx = i + 1;
+			d.gridy = 3;
 			d.ipadx = 3;
-			// JButton button = new JButton("");
 			JButton button = new ColumnButton(this, colNum);
-			
 			frame.add(button, d);
 		}
 	}
@@ -89,9 +105,8 @@ public class SwingGame extends Game {
 		game.drawBoard();
 		
 		while (!game.checkIsGameOver()) {
-			String playerStr = game.getCurrentPlayer() == Game.PLAYER_ONE_INT ? "one" : "two";	
-			text.setText("Player " + playerStr + "'s turn to move. ");
-			game.drawBoard();
+			//game.showTurnText();
+			//game.drawBoard();
 		}
 		
 		game.drawBoard();
