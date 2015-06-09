@@ -23,7 +23,6 @@ public class Game {
 		this.playerOne = "Player One";
 		this.playerTwo = "Player Two";
 		
-		currentPlayer = PLAYER_ONE_INT;
 		currentState = State.GAME_INACTIVE;
 		board = new Board();
 	}
@@ -31,6 +30,7 @@ public class Game {
 	public void startGame() {
 		board.clearBoard();
 		currentState = State.GAME_ACTIVE;
+		currentPlayer = PLAYER_ONE_INT;
 	}
 	
 	public void makeNextMove(int col) throws InvalidMoveException, GameNotActiveException, NotValidPlayerException, InvalidColumnException {

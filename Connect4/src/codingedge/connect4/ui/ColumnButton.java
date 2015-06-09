@@ -29,10 +29,8 @@ public class ColumnButton extends JButton implements ActionListener {
 		this.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					game.clearMessage();
 					game.makeNextMove(columnNumber);
-					game.drawBoard();
-					game.showTurnText();
+					game.drawBoardAndUpdateText();
 				} catch (InvalidMoveException | GameNotActiveException
 						| NotValidPlayerException | InvalidColumnException ex) {
 					game.showMessage(ex.getMessage());
